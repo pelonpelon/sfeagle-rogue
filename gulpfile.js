@@ -25,10 +25,10 @@ var url = require('url');
 var argv = require('minimist')(process.argv.slice(2));
 
 // Settings
-var DEST = './build';                         // The build output folder
-var RELEASE = !!argv.release;                 // Minimize and optimize during a build?
-var GOOGLE_ANALYTICS_ID = 'UA-XXXXX-X';       // https://www.google.com/analytics/web/
-var AUTOPREFIXER_BROWSERS = [                 // https://github.com/ai/autoprefixer
+var DEST = './build'; // The build output folder
+var RELEASE = !!argv.release; // Minimize and optimize during a build?
+var GOOGLE_ANALYTICS_ID = 'UA-XXXXX-X'; // https://www.google.com/analytics/web/
+var AUTOPREFIXER_BROWSERS = [ // https://github.com/ai/autoprefixer
   'ie >= 10',
   'ie_mob >= 10',
   'ff >= 30',
@@ -76,13 +76,15 @@ gulp.task('vendor', function() {
 // Static files
 gulp.task('assets', function() {
   src.assets = [
-  'src/assets/**', 
-  'src/pages/index.html'
+    'src/assets/**',
+    'src/pages/index.html'
   ];
   return gulp.src(src.assets)
     .pipe($.changed(DEST))
     .pipe(gulp.dest(DEST))
-    .pipe($.size({title: 'assets'}));
+    .pipe($.size({
+      title: 'assets'
+    }));
 });
 
 // Images
@@ -95,7 +97,9 @@ gulp.task('images', function() {
       interlaced: true
     }))
     .pipe(gulp.dest(DEST + '/images'))
-    .pipe($.size({title: 'images'}));
+    .pipe($.size({
+      title: 'images'
+    }));
 });
 
 // HTML pages
@@ -103,7 +107,9 @@ gulp.task('pages', function() {
   src.pages = ['src/pages/**/*.js', 'src/pages/index.html', 'src/pages/404.html'];
 
   return gulp.src(src.pages)
-    .pipe($.changed(DEST, {extension: '.html'}))
+    .pipe($.changed(DEST, {
+      extension: '.html'
+    }))
     .pipe($.replace('UA-XXXXX-X', GOOGLE_ANALYTICS_ID))
     .pipe($.if(!RELEASE, $.replace('.min.js', '.js')))
     .pipe($.if(RELEASE, $.htmlmin({
@@ -112,7 +118,9 @@ gulp.task('pages', function() {
       minifyJS: true
     }), $.jsbeautifier()))
     .pipe(gulp.dest(DEST))
-    .pipe($.size({title: 'pages'}));
+    .pipe($.size({
+      title: 'pages'
+    }));
 });
 
 // CSS style sheets
@@ -125,15 +133,19 @@ gulp.task('styles', function() {
       sourceMapBasepath: __dirname
     }))
     .on('error', console.error.bind(console))
-    .pipe($.autoprefixer({browsers: AUTOPREFIXER_BROWSERS}))
+    .pipe($.autoprefixer({
+      browsers: AUTOPREFIXER_BROWSERS
+    }))
     .pipe($.if(RELEASE, $.minifyCss()))
     .pipe(gulp.dest(DEST + '/css'))
-    .pipe($.size({title: 'styles'}));
+    .pipe($.size({
+      title: 'styles'
+    }));
 });
 
 // Bundle
 gulp.task('bundle', function(cb) {
-  var options = require('./config/webpack.js')(RELEASE,watch);
+  var options = require('./config/webpack.js')(RELEASE, watch);
   gulp.src('./src/app.js')
     .pipe($.webpack(options))
     .pipe(gulp.dest('./build/'));
@@ -206,8 +218,8 @@ gulp.task('serve', function(cb) {
 
 var jest = require('jest-cli');
 var chalk = require('chalk');
-gulp.task('jest', function (callback) {
-  var onComplete = function (result) {
+gulp.task('jest', function(callback) {
+  var onComplete = function(result) {
     // if (result) {
     // } else {
     //   console.log(chalk.bgYellow('!!! Jest tests failed! You should fix them soon. !!!'));
@@ -217,11 +229,11 @@ gulp.task('jest', function (callback) {
   jest.runCLI({}, __dirname, onComplete);
 });
 
-gulp.task('tdd', function () {
+gulp.task('tdd', function() {
   gulp.watch('src/**/*.js', ['jest']);
 });
 
-gulp.task('bdd', function () {
+gulp.task('bdd', function() {
   gulp.watch('src/**/*.js', ['jest']);
 });
 
@@ -234,7 +246,9 @@ gulp.task('deploy', function() {
     var path = require('path');
     var repoPath = path.join(os.tmpdir(), 'tmpRepo');
     $.util.log('Delete ' + $.util.colors.magenta(repoPath));
-    del.sync(repoPath, {force: true});
+    del.sync(repoPath, {
+      force: true
+    });
   }
 
   return gulp.src(DEST + '/**/*')
