@@ -200,6 +200,7 @@ gulp.task('serve', function(cb) {
 
   runSequence('build', function() {
     browserSync({
+      browser: 'google chrome',
       notify: false,
       // Customize the BrowserSync console logging prefix
       logPrefix: 'MSK',
