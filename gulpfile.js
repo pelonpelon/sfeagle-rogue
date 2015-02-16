@@ -7,11 +7,29 @@
  */
 
 'use strict';
+require('coffee-script/register');
+/*
+  gulpfile.js
+  ===========
+  Rather than manage one giant configuration file responsible
+  for creating multiple tasks, each task has been broken out into
+  its own file in gulp/tasks. Any files in that directory get
+  automatically required below.
+
+  To add a new task, simply add a new task file that directory.
+  gulp/tasks/default.js specifies the default set of tasks to run
+  when you run `gulp`.
+*/
+
+var requireDir = require('require-dir');
+
+// require('./gulpfile.coffee');
 
 // Include Gulp and other build automation tools and utilities
 // See: https://github.com/gulpjs/gulp/blob/master/docs/API.md
 
 var gulp = require('gulp');
+var config = require('./gulp-config.js');
 var $ = require('gulp-load-plugins')();
 var del = require('del');
 var path = require('path');
@@ -26,6 +44,7 @@ var argv = require('minimist')(process.argv.slice(2));
 
 // Settings
 var DEST = './build'; // The build output folder
+var ENTRY = DEST + '/' + config.version;
 var RELEASE = !!argv.release; // Minimize and optimize during a build?
 var GOOGLE_ANALYTICS_ID = 'UA-XXXXX-X'; // https://www.google.com/analytics/web/
 var AUTOPREFIXER_BROWSERS = [ // https://github.com/ai/autoprefixer
@@ -53,6 +72,11 @@ var pkgs = (function() {
   return pkgs;
 }());
 
+// Require all tasks in gulp/tasks, including subfolders
+requireDir('./gulp/tasks', {
+  recurse: true
+});
+
 // The default task
 gulp.task('default', ['serve']);
 
@@ -67,23 +91,35 @@ gulp.task('vendor', function() {
   ];
   return merge(
     gulp.src(src.vendor)
-      .pipe(gulp.dest(DEST + '/vendor')),
+      .pipe(gulp.dest(ENTRY + '/vendor')),
     gulp.src('./node_modules/bootstrap/dist/fonts/**')
-      .pipe(gulp.dest(DEST + '/fonts'))
+      .pipe(gulp.dest(ENTRY + '/fonts'))
   );
 });
 
 // Static files
 gulp.task('assets', function() {
   src.assets = [
-    'src/assets/**',
-    'src/pages/index.html'
+    'src/assets/**'
   ];
   return gulp.src(src.assets)
+    .pipe($.changed(ENTRY))
+    .pipe(gulp.dest(ENTRY))
+    .pipe($.size({
+      title: 'assets'
+    }));
+});
+
+// Entry file
+gulp.task('index', function() {
+  src.index = [
+    'src/pages/index.html'
+  ];
+  return gulp.src(src.index)
     .pipe($.changed(DEST))
     .pipe(gulp.dest(DEST))
     .pipe($.size({
-      title: 'assets'
+      title: 'index'
     }));
 });
 
@@ -91,12 +127,12 @@ gulp.task('assets', function() {
 gulp.task('images', function() {
   src.images = 'src/images/**';
   return gulp.src(src.images)
-    .pipe($.changed(DEST + '/images'))
+    .pipe($.changed(ENTRY + '/images'))
     .pipe($.imagemin({
       progressive: true,
       interlaced: true
     }))
-    .pipe(gulp.dest(DEST + '/images'))
+    .pipe(gulp.dest(ENTRY + '/images'))
     .pipe($.size({
       title: 'images'
     }));
@@ -107,7 +143,7 @@ gulp.task('pages', function() {
   src.pages = ['src/pages/**/*.js', 'src/pages/index.html', 'src/pages/404.html'];
 
   return gulp.src(src.pages)
-    .pipe($.changed(DEST, {
+    .pipe($.changed(ENTRY, {
       extension: '.html'
     }))
     .pipe($.replace('UA-XXXXX-X', GOOGLE_ANALYTICS_ID))
@@ -117,31 +153,31 @@ gulp.task('pages', function() {
       collapseWhitespace: true,
       minifyJS: true
     }), $.jsbeautifier()))
-    .pipe(gulp.dest(DEST))
+    .pipe(gulp.dest(ENTRY))
     .pipe($.size({
       title: 'pages'
     }));
 });
 
-// CSS style sheets
-gulp.task('styles', function() {
-  src.styles = 'src/styles/**/*.{css,less}';
-  return gulp.src('src/styles/app.less')
-    .pipe($.plumber())
-    .pipe($.less({
-      sourceMap: !RELEASE,
-      sourceMapBasepath: __dirname
-    }))
-    .on('error', console.error.bind(console))
-    .pipe($.autoprefixer({
-      browsers: AUTOPREFIXER_BROWSERS
-    }))
-    .pipe($.if(RELEASE, $.minifyCss()))
-    .pipe(gulp.dest(DEST + '/css'))
-    .pipe($.size({
-      title: 'styles'
-    }));
-});
+// // CSS style sheets
+// gulp.task('styles', function() {
+// src.styles = 'src/styles/**/*.{css,less}';
+// return gulp.src('src/styles/app.less')
+// .pipe($.plumber())
+// .pipe($.less({
+// sourceMap: !RELEASE,
+// sourceMapBasepath: __dirname
+// }))
+// .on('error', console.error.bind(console))
+// .pipe($.autoprefixer({
+// browsers: AUTOPREFIXER_BROWSERS
+// }))
+// .pipe($.if(RELEASE, $.minifyCss()))
+// .pipe(gulp.dest(ENTRY + '/css'))
+// .pipe($.size({
+// title: 'styles'
+// }));
+// });
 
 // Bundle
 gulp.task('bundle', function(cb) {
@@ -154,7 +190,7 @@ gulp.task('bundle', function(cb) {
 
 // Build the app from source code
 gulp.task('build', ['clean'], function(cb) {
-  runSequence(['vendor', 'assets', 'images', 'styles', 'bundle'], cb);
+  runSequence(['vendor', 'index', 'assets', 'images', 'styles', 'bundle'], cb);
 });
 
 // Launch a lightweight HTTP Server
@@ -194,6 +230,12 @@ gulp.task('serve', function(cb) {
     gulp.watch(DEST + '/**/*.*', function(file) {
       browserSync.reload(path.relative(__dirname, file.path));
     });
+    gulp.watch('gulpfile.js', function(file) {
+      browserSync.reload(path.relative(__dirname, file.path));
+    });
+    gulp.watch('gulp/**/*.*', function(file) {
+      browserSync.reload(path.relative(__dirname, file.path));
+    });
     cb();
   });
 });
@@ -225,7 +267,7 @@ gulp.task('jest', function(callback) {
     //   console.log(chalk.bgYellow('!!! Jest tests failed! You should fix them soon. !!!'));
     // }
     callback();
-  }
+  };
   jest.runCLI({}, __dirname, onComplete);
 });
 

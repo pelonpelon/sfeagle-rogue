@@ -52,7 +52,7 @@ module.exports = function(release, watch) {
         'mithril': '../node_modules/mithril/mithril.min.js',
         //   "mithril.elements": "../node_modules/mithril.elements/mithril.elements.js"
       },
-      extensions: ['', '.webpack.js', '.web.js', '.js', '.msx']
+      extensions: ['', '.web.coffee', '.webpack.coffee', '.coffee', '.webpack.js', '.web.js', '.js', '.msx']
     },
 
     module: {
@@ -66,12 +66,20 @@ module.exports = function(release, watch) {
 
       loaders: [
         {
+          test: /\.coffee$/,
+          loader: 'coffee'
+        },
+        {
           test: /\.msx$/,
           loader: 'sweetjs?modules[]=msx-reader/macros/msx-macro,readers[]=msx-reader'
         },
         {
           test: /\.css$/,
           loader: 'style!css'
+        },
+        {
+          test: /\.styl/,
+          loader: 'style!css!stylus'
         },
         {
           test: /\.less$/,
@@ -109,7 +117,7 @@ module.exports = function(release, watch) {
       // jshint to not interrupt the compilation
       // if you want any file with jshint errors to fail
       // set failOnHint to true
-      failOnHint: true,
+      failOnHint: false,
 
       // custom reporter function
       reporter: require('./jshintReporter.js')
