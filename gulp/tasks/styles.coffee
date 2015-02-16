@@ -5,7 +5,7 @@ sourcemaps = require "gulp-sourcemaps"
 handleErrors = require "../util/handleErrors"
 config = require "../../gulp-config"
 gulp.task "styles", ->
-  gulp.src config.src
+  gulp.src config.styles
     .pipe sourcemaps.init()
     .pipe stylus(
       use: nib()

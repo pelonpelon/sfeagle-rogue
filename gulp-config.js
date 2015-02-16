@@ -1,10 +1,11 @@
 'use strict';
 
-var version = 'rogue';
-var build = './build/';
-var dest = build + version;
+var version = 'app'; // or basename
+var build = './build';
+var dest = build + '/' + version;
 var src = './src';
 var dist = './dist';
+var styles = src + '/styles/' + version + '.styl';
 var remoteHost = 'sf-eagle.com';
 var remotePath = '/var/chroot/home/content/20/9803620/html/';
 var remoteUser = 'sfeagleftp';
@@ -15,6 +16,7 @@ module.exports = {
   src: src,
   dist: dist,
   version: version,
+  styles: styles,
   remoteHost: remoteHost,
   remotePath: remotePath,
   remoteUser: remoteUser,
