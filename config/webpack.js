@@ -17,15 +17,15 @@ var webpack = require('webpack');
  * a release mode, false otherwise
  * @return {object} Webpack configuration
  */
-module.exports = function(release,watch) {
+module.exports = function(release, watch) {
   return {
     cache: !release,
     debug: !release,
     devtool: 'eval',
-    watch:watch,
+    watch: watch,
 
     output: {
-      filename: "bundle.js"
+      filename: 'bundle.js'
     },
 
     stats: {
@@ -34,7 +34,9 @@ module.exports = function(release,watch) {
     },
 
     plugins: release ? [
-      new webpack.DefinePlugin({'process.env.NODE_ENV': '"production"'}),
+      new webpack.DefinePlugin({
+        'process.env.NODE_ENV': '"production"'
+      }),
       new webpack.optimize.DedupePlugin(),
       new webpack.optimize.UglifyJsPlugin(),
       new webpack.optimize.OccurenceOrderPlugin(),
@@ -46,11 +48,11 @@ module.exports = function(release,watch) {
         'node_modules',
         'bower_components'
       ],
-      // alias: {
-      //   "mithril": "../../node_modules/mithril/mithril.js",
-      //   "mithril.elements": "../node_modules/mithril.elements/mithril.elements.js"
-      // },
-      extensions: ['', '.webpack.js', '.web.js', '.js', '.msx']
+      alias: {
+        'mithril': '../node_modules/mithril/mithril.min.js',
+        //   "mithril.elements": "../node_modules/mithril.elements/mithril.elements.js"
+      },
+      extensions: ['', '.web.coffee', '.webpack.coffee', '.coffee', '.webpack.js', '.web.js', '.js', '.msx']
     },
 
     module: {
@@ -64,12 +66,20 @@ module.exports = function(release,watch) {
 
       loaders: [
         {
-          test: /\.msx$/, 
+          test: /\.coffee$/,
+          loader: 'coffee'
+        },
+        {
+          test: /\.msx$/,
           loader: 'sweetjs?modules[]=msx-reader/macros/msx-macro,readers[]=msx-reader'
         },
         {
           test: /\.css$/,
           loader: 'style!css'
+        },
+        {
+          test: /\.styl/,
+          loader: 'style!css!stylus'
         },
         {
           test: /\.less$/,
@@ -93,24 +103,24 @@ module.exports = function(release,watch) {
     // more options in the optional jshint object
     // see: http://jshint.com/docs/ for more details
     jshint: {
-        // any jshint option http://www.jshint.com/docs/options/
-        // i. e.
-        camelcase: true,
+      // any jshint option http://www.jshint.com/docs/options/
+      // i. e.
+      camelcase: true,
 
-        // any globals that should be suppressed
-        globals: ['m'],
+      // any globals that should be suppressed
+      globals: ['m'],
 
-        // jshint errors are displayed by default as warnings
-        // set emitErrors to true to display them as errors
-        emitErrors: false,
+      // jshint errors are displayed by default as warnings
+      // set emitErrors to true to display them as errors
+      emitErrors: false,
 
-        // jshint to not interrupt the compilation
-        // if you want any file with jshint errors to fail
-        // set failOnHint to true
-        failOnHint: true,
+      // jshint to not interrupt the compilation
+      // if you want any file with jshint errors to fail
+      // set failOnHint to true
+      failOnHint: false,
 
-        // custom reporter function
-        reporter: require('./jshintReporter.js')
+      // custom reporter function
+      reporter: require('./jshintReporter.js')
     }
   };
 };
