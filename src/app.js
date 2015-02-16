@@ -2,7 +2,7 @@
 'use strict';
 
 var config = require('../gulp-config.js');
-require('./styles/' + config.version + '.styl');
+require('./styles/app.styl');
 window.m = require('mithril');
 
 // tab routes
