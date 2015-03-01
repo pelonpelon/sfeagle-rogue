@@ -8,8 +8,9 @@
   "dependencies": {
     "bootstrap": "^3.3.1",
     "mithril": "^0.1.28",
-    "mithril.elements": "^0.1.1",
-    "object-assign": "^1.0.0"
+    "object-assign": "^1.0.0",
+    "velocity": "~0.7.1",
+    "velocity-animate": "~1.2.2"
   },
   "devDependencies": {
     "browser-sync": "^1.6.5",
@@ -63,9 +64,11 @@
     "coffee-script": "~1.9.0",
     "require-dir": "~0.1.0",
     "gulp-stylus": "~2.0.0",
-    "nib": "~1.1.0",
+    "nib": "~1.0.4",
     "gulp-sourcemaps": "~1.3.0",
-    "gulp-notify": "~2.2.0"
+    "gulp-notify": "~2.2.0",
+    "bootstrap-styl": "~4.0.2",
+    "bundle-loader": "~0.5.3"
   },
   "jest": {
     "rootDir": "src",
@@ -73,6 +76,12 @@
   },
   "scripts": {
     "start": "gulp",
+    "debug0": "cp node_modules/mithril/mithril.js ./mithril_pxp.js;",
+    "debug1": "export MITHRIL_DEBUG=1;sjs --readable-names -m ./mithril_pxp_macros.sjs -o ./mithril_pxp.js node_modules/mithril/mithril.js; export MITHRIL_DEBUG=",
+    "debug2": "export MITHRIL_DEBUG=2;sjs --readable-names -m ./mithril_pxp_macros.sjs -o ./mithril_pxp.js node_modules/mithril/mithril.js; export MITHRIL_DEBUG=",
+    "debug3": "export MITHRIL_DEBUG=3;sjs --readable-names -m ./mithril_pxp_macros.sjs -o ./mithril_pxp.js node_modules/mithril/mithril.js; export MITHRIL_DEBUG=",
+    "debug4": "export MITHRIL_DEBUG=4;sjs --readable-names -m ./mithril_pxp_macros.sjs -o ./mithril_pxp.js node_modules/mithril/mithril.js; export MITHRIL_DEBUG=",
+    "profile": "export MITHRIL_DEBUG=p;sjs --readable-names -m ./mithril_pxp_macros.sjs -o ./mithril_pxp.js node_modules/mithril/mithril.js; export MITHRIL_DEBUG=",
     "test": "jest",
     "test-debug": "node-debug --nodejs --harmony ./node_modules/jest-cli/bin/jest.js"
   }

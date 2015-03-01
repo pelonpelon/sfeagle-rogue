@@ -65,6 +65,11 @@ module.exports = function(release, watch) {
       ],
 
       loaders: [
+        // loading every .js file ca be slow. Use this per file instead: import Animal from "babel!./Animal.js";
+        {
+          test: /\.js$/, exclude: /node_modules/,
+          loader: 'babel-loader'
+        },
         {
           test: /\.coffee$/,
           loader: 'coffee'
@@ -103,6 +108,21 @@ module.exports = function(release, watch) {
     // more options in the optional jshint object
     // see: http://jshint.com/docs/ for more details
     jshint: {
+
+      // node keywords and variables (ie. console.log, use strict
+      node: true,
+
+      // suppress semicolon warnings
+      asi: true,
+
+      // This option prohibits the use of a variable before it was defined.
+      // JavaScript has function scope only and, in addition to that,
+      // all variables are always moved—or hoisted— to the top of the function.
+      // This behavior can lead to some very nasty bugs and that's why it is safer
+      // to always use variable only after they have been explicitly defined.
+      // Setting this option to "nofunc" will allow function declarations to be ignored.
+      latedef: 'nofunc',
+
       // any jshint option http://www.jshint.com/docs/options/
       // i. e.
       camelcase: true,

@@ -2,12 +2,11 @@
   "camelcase": true,
   "immed": true,
   "indent": 2,
-  "latedef": true,
+  "latedef": "nofunc",
   "newcap": true,
   "quotmark": "single",
 
   "esnext": true,
-  "globalstrict": true,
 
   "browser": true,
   "node": true,
