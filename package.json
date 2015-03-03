@@ -70,7 +70,9 @@
     "bootstrap-styl": "~4.0.2",
     "bundle-loader": "~0.5.3",
     "babel-core": "~4.6.3",
-    "babel-loader": "~4.0.0"
+    "babel-loader": "~4.0.0",
+    "stylus": "~0.49.3",
+    "stylus-loader": "~0.6.0"
   },
   "jest": {
     "rootDir": "src",
