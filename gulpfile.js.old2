@@ -35,7 +35,6 @@ var $ = require('gulp-load-plugins')();
 var del = require('del');
 var path = require('path');
 var merge = require('merge-stream');
-var merge2 = require('merge2');
 var runSequence = require('run-sequence');
 var browserSync = require('browser-sync');
 var pagespeed = require('psi');
@@ -46,10 +45,10 @@ var argv = require('minimist')(process.argv.slice(2));
 
 // Settings
 // var DEST = './build'; // The build output folder
-var VERSION = config.version;
 var DEST = config.build; // The build output folder
 var VERSION_DIR = config.versionDir;
 var RELEASE = !!argv.release; // Minimize and optimize during a build?
+var GOOGLE_ANALYTICS_ID = myconfig.googleAnalyticsId; // https://www.google.com/analytics/web/
 var AUTOPREFIXER_BROWSERS = [ // https://github.com/ai/autoprefixer
   'ie >= 10',
   'ie_mob >= 10',
@@ -116,26 +115,9 @@ gulp.task('assets', function() {
 
 // Index file
 // gulp.task('index', function() {
-  // src.index = VERSION_DIR + '/pages/index.html';
+  // src.index = 'src/pages/index.html';
   // return gulp.src(src.index)
     // .pipe($.changed(DEST))
-    // .pipe(gulp.dest(DEST))
-    // .pipe($.size({
-      // title: 'index'
-    // }));
-// });
-
-// jade files // don't process _partials.jade that haven't changed
-// gulp.task('jade', function() {
-  // src.index = 'src/pages/**/*.jade';
-  // return gulp.src(src.index)
-    // .pipe($.changed(DEST, {extension: '.html'}))
-    // .pipe($.if(global.isWatching, $.cached('jade')))
-    // .pipe($.jadeInheritance({basedir: 'src'}))
-    // .pipe($.filter(function(file) {
-      // return !/\/_/.test(file.path) || !/^_/.test(file.relative);
-    // }))
-    // .pipe($.jade())
     // .pipe(gulp.dest(DEST))
     // .pipe($.size({
       // title: 'index'
@@ -158,21 +140,15 @@ gulp.task('images', function() {
 });
 
 // HTML pages
-    // .pipe($.changed(DEST))
-gulp.task('pages', ['jade'], function() {
-  // src.pages = ['src/pages/**/*.js', 'src/pages/index.html', 'src/pages/404.html'];
-  src.pages = ['src/pages/index.html', 'src/pages/404.html'];
+gulp.task('pages', function() {
+  src.pages = ['src/pages/**/*.js', 'src/pages/index.html', 'src/pages/404.html'];
+
   return gulp.src(src.pages)
-    .pipe($.replace('bundle.js', VERSION + '/bundle.js'))
-    .pipe($.replace('myapp', VERSION))
-    .pipe($.replace('myGoogleAnalyticsId', myconfig.myGoogleAnalyticsId))
-    .pipe($.replace('myGoogleListedName', myconfig.myGoogleListedName))
-    .pipe($.replace('myStreetAddress', myconfig.myStreetAddress))
-    .pipe($.replace('myCity', myconfig.myCity))
-    .pipe($.replace('myState', myconfig.myState))
-    .pipe($.replace('myPhoneNumber', myconfig.myPhoneNumber))
-    .pipe($.replace('myLogoUrl', myconfig.myLogoUrl))
-    .pipe($.replace('myBusinessUrl', myconfig.myBusinessUrl))
+    .pipe($.changed(VERSION_DIR, {
+      extension: '.html'
+    }))
+    .pipe($.replace('UA-XXXXX-X', GOOGLE_ANALYTICS_ID))
+    .pipe($.replace('bundle.js', VERSION_DIR + '/bundle.js'))
     .pipe($.if(!RELEASE, $.replace('.min.js', '.js')))
     .pipe($.if(RELEASE, $.htmlmin({
       removeComments: true,
@@ -210,28 +186,27 @@ gulp.task('bundle', function(cb) {
   var options = require(config.webpack.configfile)(RELEASE, watch);
   gulp.src('./src/app.js')
     .pipe($.webpack(options))
-    .pipe(gulp.dest(VERSION_DIR));
+    .pipe(gulp.dest('./build/'));
   cb(null);
 });
 
 // Build the app from source code
 gulp.task('build', ['clean'], function(cb) {
-  runSequence(['vendor', 'assets', 'images', 'styles', 'bundle', 'pages'], cb);
+  runSequence(['vendor', 'jade', 'pages', 'assets', 'images', 'styles', 'bundle'], cb);
 });
 
 // Launch a lightweight HTTP Server
 gulp.task('serve', function(cb) {
 
   watch = true;
-  global.isWatching = true;
 
   runSequence('build', function() {
     browserSync({
       browser: 'Google Chrome Canary',
       notify: false,
       // Customize the BrowserSync console logging prefix
-      logPrefix: VERSION.toUpperCase(),
-      port: 3031,
+      logPrefix: 'PALANTIR',
+      port: 3032,
       // Run as an https by uncommenting 'https: true'
       // Note: this uses an unsigned certificate which on first access
       //       will present a certificate warning in the browser.
@@ -254,17 +229,16 @@ gulp.task('serve', function(cb) {
     gulp.watch(src.vendor, ['vendor']);
     gulp.watch(src.assets, ['assets']);
     gulp.watch(src.images, ['images']);
-    gulp.watch('./src/pages/jade/**/*.jade', ['jade']);
     gulp.watch(src.pages, ['pages']);
     gulp.watch(src.index, ['index']);
-    gulp.watch('./src/styles/**/*.styl', ['styles']);
+    gulp.watch(src.styles, ['styles']);
     gulp.watch(DEST + '/**/*.*', function(file) {
       browserSync.reload(path.relative(__dirname, file.path));
     });
-    gulp.watch('gulpfile.js', ['build'], function(file) {
+    gulp.watch('gulpfile.js', function(file) {
       browserSync.reload(path.relative(__dirname, file.path));
     });
-    gulp.watch('gulp/**/*.*', ['build'], function(file) {
+    gulp.watch('gulp/**/*.*', function(file) {
       browserSync.reload(path.relative(__dirname, file.path));
     });
     gulp.watch('./mithril_pxp.js', function(file) {

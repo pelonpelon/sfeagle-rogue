@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dev Setup</title>
+    <!-- Google only recognizes 'visible' microdata. This is a work-a-round.-->
+    <style type="text/css">body > div:first-of-type { width: 1px; height: 1px; overflow: hidden;}</style>
+  </head>
+  <body>
+    <div itemscope itemtype="http://schema.org/Organization"><span itemprop="name">myGoogleListedName</span>
+      <div itemprop="address" itemscope itemtype="http://schema.org/PostalAddress"><span itemprop="streetAddress">myStreetAddress</span><span itemprop="addressLocality">myCity</span><span itemprop="addressRegion">myState</span></div><img itemprop="logo" src="myLogoUrl"><a href="myBusinessUrl" itemprop="url">myBusinessUrl</a>
+    </div>
+    <div id="myapp"></div>
+    <script src="bundle.js"></script>
+  </body>
+</html>

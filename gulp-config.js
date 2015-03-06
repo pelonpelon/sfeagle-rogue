@@ -3,14 +3,13 @@
 // host name, IDs, keys, etc. INCLUDE THIS FILE IN .gitignore
 var myconfig = require('./myprivateconfig.js');
 
-
-var version = 'app'; // or basename
+var version = myconfig.version; // or basename
 var src = './src';
 var build = './build';
 var versionDir = build + '/' + version;
 var dist = './dist';
+var rsyncDist = './dist/';
 var styles = src + '/styles/' + version + '.styl';
-
 
 module.exports = {
 
@@ -76,7 +75,9 @@ module.exports = {
     }]
   },
   rsync: {
-    src: dist,
-    dest: myconfig.remoteUser + '@' + myconfig.remoteHost + ':' + myconfig.remotePath
+    src: rsyncDist,
+    root: myconfig.remoteUser + '@' + myconfig.remoteHost + ':' + myconfig.remotePath,
+    version: version,
+    dest: myconfig.remoteUser + '@' + myconfig.remoteHost + ':' + myconfig.remotePath + '/' + version
   }
 };

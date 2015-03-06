@@ -5,16 +5,13 @@ var config = require('../gulp-config.js');
 require('./styles/app.styl');
 window.m = require('mithril');
 
-// tab routes
-var XP = 1;
-
 var model = [
   'apple',
   'tomato',
   'carrot'
 ];
 
-var app = function(tabNumber) {
+var myapp = function(tabNumber) {
   return {
 
     controller: function() {
@@ -40,8 +37,6 @@ var app = function(tabNumber) {
   };
 };
 
-m.route(document.getElementById('app'), '/', {
-  '/': app(),
-  // '/todos-xp': app(XP)
-  '/todos-xp/:filter': app(XP)
+m.route(document.getElementById('myapp'), '/', {
+  '/': myapp(),
 });
