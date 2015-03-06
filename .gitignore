@@ -1,5 +1,7 @@
 myprivateconfig.js
 src/
+build/
+dist/
 bower_components/
 node_modules/
 npm-debug.log
