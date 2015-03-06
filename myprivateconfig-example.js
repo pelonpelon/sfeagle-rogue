@@ -20,7 +20,7 @@ module.exports = {
 // Password should be provided through ssh setup
 
   remoteHost: 'acme.com',
-  remotePath: '/var/chroot/home/content/20/9803620/html',
+  remotePath: '/var/chroot/home/user/martha',
   remoteUser: 'username',
 
 // Google business microformat options. See src-example/pages/index.jade
