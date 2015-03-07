@@ -10,7 +10,8 @@
     "mithril": "^0.1.28",
     "object-assign": "^1.0.0",
     "velocity": "~0.7.1",
-    "velocity-animate": "~1.2.2"
+    "velocity-animate": "~1.2.2",
+    "insert-css": "~0.2.0"
   },
   "devDependencies": {
     "browser-sync": "^1.6.5",
