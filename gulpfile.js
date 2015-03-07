@@ -103,18 +103,18 @@ gulp.task('default', ['serve']);
 gulp.task('clean', del.bind(null, [DEST]));
 
 // 3rd party libraries
-gulp.task('vendor', function() {
-  src.vendor = [
-    'bower_components/todomvc-common/base.{js,css}',
-    'bower_components/todomvc-common/bg.png'
-  ];
-  return merge(
-    gulp.src(src.vendor)
-      .pipe(gulp.dest(VERSION_DIR + '/vendor')),
-    gulp.src('./node_modules/bootstrap/dist/fonts/**')
-      .pipe(gulp.dest(VERSION_DIR + '/fonts'))
-  );
-});
+// gulp.task('vendor', function() {
+  // src.vendor = [
+    // 'bower_components/todomvc-common/base.{js,css}',
+    // 'bower_components/todomvc-common/bg.png'
+  // ];
+  // return merge(
+    // gulp.src(src.vendor)
+      // .pipe(gulp.dest(VERSION_DIR + '/vendor')),
+    // gulp.src('./node_modules/bootstrap/dist/fonts/**')
+      // .pipe(gulp.dest(VERSION_DIR + '/fonts'))
+  // );
+// });
 
 // Static files
 gulp.task('assets', function() {
@@ -245,7 +245,7 @@ gulp.task('bundle', function(cb) {
 
 // Build the app from source code
 gulp.task('build', ['clean'], function(cb) {
-  runSequence(['vendor', 'assets', 'images', 'bundle', 'pages'], cb);
+  runSequence(['assets', 'images', 'bundle', 'pages'], cb);
 });
 
 // Launch a lightweight HTTP Server
@@ -280,7 +280,7 @@ gulp.task('serve', function(cb) {
       }
     });
 
-    gulp.watch(src.vendor, ['vendor']);
+    // gulp.watch(src.vendor, ['vendor']);
     gulp.watch(src.assets, ['assets']);
     gulp.watch(src.images, ['images']);
     gulp.watch('./src/pages/jade/**/*.jade', ['jade']);
