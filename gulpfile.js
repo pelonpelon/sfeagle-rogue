@@ -287,7 +287,7 @@ gulp.task('serve', function(cb) {
     gulp.watch('./src/pages/jade/**/*.jade', ['jade']);
     gulp.watch(src.pages, ['pages']);
     gulp.watch(src.index, ['index']);
-    gulp.watch('./src/styles/**/*.styl', ['styles']);
+    gulp.watch('./src/styles/**/*.styl', ['bundle']);
     gulp.watch(DEST + '/**/*.*', function(file) {
       browserSync.reload(path.relative(__dirname, file.path));
     });
@@ -297,7 +297,7 @@ gulp.task('serve', function(cb) {
     gulp.watch('gulp/**/*.*', ['build'], function(file) {
       browserSync.reload(path.relative(__dirname, file.path));
     });
-    gulp.watch('./mithril_pxp.js', function(file) {
+    gulp.watch('./mithril_palantir.js', function(file) {
       browserSync.reload(path.relative(__dirname, file.path));
     });
     cb();
