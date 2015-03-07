@@ -238,7 +238,7 @@ gulp.task('pages', ['jade'], function() {
 // Bundle
 gulp.task('bundle', function(cb) {
   var options = require(config.webpack.configfile)(RELEASE, watch);
-  gulp.src('./src/app.js')
+  gulp.src('./src/app.coffee')
     .pipe($.webpack(options))
     .pipe(gulp.dest(VERSION_DIR));
   cb(null);
@@ -288,6 +288,7 @@ gulp.task('serve', function(cb) {
     gulp.watch(src.pages, ['pages']);
     gulp.watch(src.index, ['index']);
     gulp.watch('./src/styles/**/*.styl', ['bundle']);
+    gulp.watch('./src/**/*.coffee', ['bundle']);
     gulp.watch(DEST + '/**/*.*', function(file) {
       browserSync.reload(path.relative(__dirname, file.path));
     });

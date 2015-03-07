@@ -3,7 +3,7 @@ html(lang='en')
   head
     meta(charset='utf-8')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
-    title Dev Setup
+    title SF-Eagle (rogue)
     // Google only recognizes 'visible' microdata. This is a work-a-round.
     style(type="text/css") body > div:first-of-type { width: 1px; height: 1px; overflow: hidden;}
 
@@ -16,5 +16,9 @@ html(lang='en')
         span(itemprop="addressRegion") myState
       img(itemprop="logo" src="myLogoUrl")
       a(href="myBusinessUrl" itemprop="url") myBusinessUrl
+
+    #header
     #myapp
-    script(src='bundle.js')
+    #footer
+
+  script(src='bundle.js' async defer)

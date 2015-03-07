@@ -1,0 +1,11 @@
+!_TAG_FILE_FORMAT	2	/extended format/
+!_TAG_FILE_SORTED	0	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Łukasz Korecki /lukasz@coffeesounds.com/
+!_TAG_PROGRAM_NAME	CoffeeTags	//
+!_TAG_PROGRAM_URL	https://github.com/lukaszkorecki/CoffeeTags	/GitHub repository/
+!_TAG_PROGRAM_VERSION	0.2.1	//
+controller	app.coffee	/^  controller: ->$/;"	f	lineno:9	object:myapp	type:function
+init	components/header/header.model.coffee	/^  vm.init = ->$/;"	f	lineno:5	object:vm	type:function
+myapp	app.coffee	/^myapp = ->$/;"	f	lineno:8	object:window	type:function
+view	app.coffee	/^  view: (ctrl) ->$/;"	f	lineno:11	object:myapp	type:function
+vm	components/header/header.model.coffee	/^header.vm = (->$/;"	f	lineno:3	object:window	type:function
