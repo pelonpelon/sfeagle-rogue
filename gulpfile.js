@@ -43,7 +43,8 @@ var extend = require('extend');
 var fs = require('fs');
 var url = require('url');
 var argv = require('minimist')(process.argv.slice(2));
-var nib = require('nib');
+var rsync = require('rsyncwrapper').rsync;
+// var nib = require('nib');
 
 // Settings
 // var DEST = './build'; // The build output folder
@@ -362,6 +363,24 @@ gulp.task('deploy', function() {
       remoteUrl: 'https://github.com/{name}/{name}.github.io.git',
       branch: 'master'
     }));
+});
+
+// rsync to server
+gulp.task('rsync', function(cb) {
+  if (!RELEASE) $.util.log('DRY RUN. add --release to upload to server');
+  rsync(
+    { dryRun: !RELEASE,
+      ssh: true,
+      src: config.rsync.src,
+      dest: config.rsync.dest,
+      recursive: true,
+      args: ['--verbose']
+    },
+    function(error, stdout, stderr, cmd) {
+      $.util.log(stdout);
+    }
+  );
+  cb(null);
 });
 
 // Run PageSpeed Insights
