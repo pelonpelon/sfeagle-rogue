@@ -367,7 +367,7 @@ gulp.task('deploy', function() {
 
 // rsync to server
 gulp.task('rsync', function(cb) {
-  if (!RELEASE) $.util.log('DRY RUN. add --release to upload to server');
+  if (!RELEASE) $.util.log($.util.colors.yellow('DRY RUN. add --release to upload to server'));
   rsync(
     { dryRun: !RELEASE,
       ssh: true,
