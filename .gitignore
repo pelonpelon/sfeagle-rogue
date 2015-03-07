@@ -1,5 +1,6 @@
 myprivateconfig.js
 # src/
+mithril-palantir.js
 build/
 dist/
 bower_components/

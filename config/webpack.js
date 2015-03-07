@@ -49,7 +49,7 @@ module.exports = function(release, watch) {
         'bower_components'
       ],
       alias: {
-        'mithril': '../node_modules/mithril/mithril.min.js',
+        mithril: '../node_modules/mithril/mithril.min.js',
         //   "mithril.elements": "../node_modules/mithril.elements/mithril.elements.js"
       },
       extensions: ['', '.web.coffee', '.webpack.coffee', '.coffee', '.webpack.js', '.web.js', '.js', '.msx']
@@ -59,7 +59,7 @@ module.exports = function(release, watch) {
       preLoaders: [
         {
           test: /\.js$/,
-          exclude: /node_modules/,
+          exclude: [/node_modules/, /mithril-palantir\.js/],
           loader: 'jshint'
         }
       ],
@@ -144,4 +144,3 @@ module.exports = function(release, watch) {
     }
   };
 };
-
