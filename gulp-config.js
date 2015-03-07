@@ -8,7 +8,6 @@ var src = './src';
 var build = './build';
 var versionDir = build + '/' + version;
 var dist = './dist';
-var rsyncDist = './dist/';
 var styles = src + '/styles/' + version + '.styl';
 
 module.exports = {
@@ -75,7 +74,7 @@ module.exports = {
     }]
   },
   rsync: {
-    src: rsyncDist,
+    src: dist + '/',
     root: myconfig.remoteUser + '@' + myconfig.remoteHost + ':' + myconfig.remotePath,
     version: version,
     dest: myconfig.remoteUser + '@' + myconfig.remoteHost + ':' + myconfig.remotePath + '/' + version
