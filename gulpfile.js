@@ -43,13 +43,14 @@ var extend = require('extend');
 var fs = require('fs');
 var url = require('url');
 var argv = require('minimist')(process.argv.slice(2));
+var nib = require('nib');
 
 // Settings
 // var DEST = './build'; // The build output folder
 var VERSION = config.version;
-var DEST = config.build; // The build output folder
-var VERSION_DIR = config.versionDir;
 var RELEASE = !!argv.release; // Minimize and optimize during a build?
+var DEST = RELEASE ? config.dist : config.build; // The build output folder
+var VERSION_DIR = DEST + '/' + config.version;
 var AUTOPREFIXER_BROWSERS = [ // https://github.com/ai/autoprefixer
   'ie >= 10',
   'ie_mob >= 10',
@@ -64,10 +65,10 @@ var AUTOPREFIXER_BROWSERS = [ // https://github.com/ai/autoprefixer
 
 var src = {};
 var watch = false;
-var pkgs = (function () {
+var pkgs = (function() {
   var pkgs = {};
 
-  var map = function (source) {
+  var map = function(source) {
     for (var key in source) {
       pkgs[key.replace(/[^a-z0-9]/gi, '')] = source[key].substring(1);
     }
@@ -75,6 +76,20 @@ var pkgs = (function () {
   map(require('./package.json').dependencies);
   return pkgs;
 }());
+
+// handle errors
+// var handleErrors = function() {
+  // var args = Array.prototype.slice.call(arguments);
+  // $.util.log('Error: ' + args);
+  // return;
+  // Send error to notification center with gulp-notify
+  // $.notify.onError({
+    // title: 'Compile Error',
+    // message: '<%= error.message %>'
+  // }).apply(this, args);
+  // // Keep gulp from hanging on this task
+  // this.emit('end');
+// };
 
 // Require all tasks in gulp/tasks, including subfolders
 requireDir('./gulp/tasks', {
@@ -205,6 +220,20 @@ gulp.task('pages', ['jade'], function() {
 // }));
 // });
 
+// Stylus
+// gulp.task('styles', function(cb) {
+  // gulp.src(config.styles)
+    // .pipe($.sourcemaps.init())
+    // .pipe($.stylus({
+      // use: nib(),
+      // compress: false
+    // }))
+    // .pipe($.sourcemaps.write())
+    // .on('error', handleErrors)
+    // .pipe(gulp.dest(VERSION_DIR));
+  // cb(null);
+// });
+
 // Bundle
 gulp.task('bundle', function(cb) {
   var options = require(config.webpack.configfile)(RELEASE, watch);
@@ -216,7 +245,7 @@ gulp.task('bundle', function(cb) {
 
 // Build the app from source code
 gulp.task('build', ['clean'], function(cb) {
-  runSequence(['vendor', 'assets', 'images', 'styles', 'bundle', 'pages'], cb);
+  runSequence(['vendor', 'assets', 'images', 'bundle', 'pages'], cb);
 });
 
 // Launch a lightweight HTTP Server
