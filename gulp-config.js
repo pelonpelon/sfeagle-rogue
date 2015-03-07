@@ -75,8 +75,6 @@ module.exports = {
   },
   rsync: {
     src: dist + '/',
-    root: myconfig.remoteUser + '@' + myconfig.remoteHost + ':' + myconfig.remotePath,
-    version: version,
-    dest: myconfig.remoteUser + '@' + myconfig.remoteHost + ':' + myconfig.remotePath + '/' + version
+    dest: myconfig.remoteUser + '@' + myconfig.remoteHost + ':' + myconfig.remotePath
   }
 };
