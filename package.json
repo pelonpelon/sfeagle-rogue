@@ -82,7 +82,8 @@
     "gulp-filter": "~2.0.2",
     "gulp-jade": "~1.0.0",
     "coffee-loader": "~0.7.2",
-    "webpagetest": "~0.3.1"
+    "webpagetest": "~0.3.1",
+    "gulp-open": "~0.3.2"
   },
   "jest": {
     "rootDir": "src",
