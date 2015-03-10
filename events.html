@@ -1,0 +1,128 @@
+<body>
+  <h1>These are events</h1>
+  <div class="events_object"></div>
+</body>
+<script src="//cdnjs.cloudflare.com/ajax/libs/mithril/0.1.28/mithril.min.js"></script>
+<script>
+
+  home = {};
+  home.controller = function () {};
+  home.view = function (ctrl) {
+  return  m("div", [  
+            m("h1", "Home"),
+            m("a[href='/cal']", {config: m.route}, "Goto Cal")
+          ])
+  };
+
+  var cal = {};
+  cal.events = Array;
+
+  cal.controller = function() {
+    useLocalStorage(); 
+    loadRemoteData();
+  };
+  cal.view = function (ctrl) {
+    return  m(".events_object", [
+              m("h5.datasource", "from localstorage"),
+              m("table", [ 
+                cal.events.map(function(evt, idx){
+                  return  m("tr", [
+                            m("td", idx + ':  ' + evt.title),
+                            m("td", evt.date),
+                            m("td", evt.time)
+                          ])
+                  })
+                ])
+              ])
+  };
+
+//FUNCTION useLocalStorage
+//Get data from localStorage if exist
+//TODO: replace w/ localstorage library
+var useLocalStorage = function() {
+  var el
+    , data
+    , events
+    , sorted
+  ;
+  data = localStorage.getItem('events');
+  if (data) {
+    var el = document.getElementsByClassName("events_object")[0];
+    el.innerHTML = '<h5 class="datasource" style={color: "red";}>from localstarage<h5>';
+    events = JSON.parse(data);
+    sorted = {};
+    for (var evt in events) {
+      if (events[evt].EVENT) {
+        var thing = JSON.parse('{'+events[evt].EVENT+'}');
+        sorted[thing.date_num] = thing;
+        el.innerHTML
+          +='<br><br>'
+          +thing.title
+          +'<br>'+thing.date
+          +'<br>'+thing.time;
+      }
+    }
+    el.innerHTML += JSON.stringify(sortEvents(sorted));
+  }
+}
+
+var loadRemoteData = function() {
+  var xmlhttp
+    , resp
+    , el
+    , data
+    , events
+    , sorted
+  ;
+  if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+      xmlhttp=new XMLHttpRequest();
+  }
+  else {// code for IE6, IE5
+      xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  xmlhttp.onreadystatechange=function() {
+    if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+      resp = xmlhttp.responseText;
+      localStorage.setItem("events", resp);
+      data = localStorage.getItem('events');
+      el = document.getElementsByClassName("events_object")[0];
+      el.innerHTML = '<h6 class="datasource">from database<h6>';
+      events = JSON.parse(data);
+      sorted = {}
+      for (var evt in events) {
+        if (events[evt].EVENT) {
+          var thing = JSON.parse('{'+events[evt].EVENT+'}');
+          sorted[thing.date_num] = thing;
+          el.innerHTML
+            +='<br><br>'
+            +thing.title
+            +'<br>'+thing.date
+            +'<br>'+thing.time;
+        }
+      }
+      el.innerHTML += JSON.stringify(sorted);
+    }
+  }
+xmlhttp.open("GET","sql.php",true);
+xmlhttp.send();
+}
+
+var sortEvents = function(obj) {
+  var sortable = [];
+  for (var item in obj) {
+    sortable.push([item, obj[item]]);
+  }
+  sortable.sort(function(a, b) {return a[1] - b[1]});
+  return sortable;
+}
+
+
+//m.route.mode = "pathname";
+m.route(document.getElementsByClassName("events_object")[0], "/", {
+    "/": home,
+    "/cal": cal
+});
+m.module(document.body, {controller: cal.controller, view: cal.view});
+</script>
+
+

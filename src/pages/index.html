@@ -14,6 +14,53 @@
     <div id="header"></div>
     <div id="myapp"></div>
     <div id="footer"></div>
+    <script>(function() {
+  var SanFranciscoOffsetHours, anHour, closingTime, div, event, events, footer, footerParent, i, len, localOffsetHours, now, offsetHours, today, todaysEvents;
+
+  if (localStorage.getItem('events')) {
+    console.log('yes localStorage');
+    events = JSON.parse(localStorage.getItem('events'));
+    Date.prototype.stdTimezoneOffset = function() {
+      var jan, jul;
+      jan = new Date(this.getFullYear(), 0, 1);
+      jul = new Date(this.getFullYear(), 6, 1);
+      return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
+    };
+    Date.prototype.dst = function() {
+      return this.getTimezoneOffset() < this.stdTimezoneOffset();
+    };
+    today = new Date();
+    anHour = 60 * 60 * 1000;
+    localOffsetHours = today.getTimezoneOffset() / 60;
+    SanFranciscoOffsetHours = today.dst() ? 7 : 8;
+    offsetHours = SanFranciscoOffsetHours - localOffsetHours;
+    now = today.getTime();
+    if ((today.setHours(offsetHours, 0, 0, 0) < now && now < today.setHours(2 + offsetHours, 0, 0, 0))) {
+      closingTime = today.getTime(today.setHours(2 + offsetHours, 0, 0, 0));
+    } else {
+      closingTime = today.getTime(today.setHours(2 + offsetHours, 0, 0, 0)) + 24 * anHour;
+    }
+    todaysEvents = events.filter(function(event) {
+      return parseInt(event.date_num) * 1000 < closingTime + 24 * anHour;
+    });
+    for (i = 0, len = todaysEvents.length; i < len; i++) {
+      event = todaysEvents[i];
+      div = document.createElement('div');
+      div.style.color = 'red';
+      div.innerHTML = event.time + '-' + event.endtime + ' ' + event.title.replace(/<br\ ?\/?>/g, ' ');
+      div.innerHTML = div.textContent;
+      footer = document.getElementById('footer');
+      footerParent = footer.parentNode;
+      footerParent.insertBefore(div, footer);
+    }
+  } else {
+    console.log('no localStorage');
+    console.log(localStorage.getItem('events'));
+  }
+
+}).call(this);
+
+    </script>
   </body>
   <script src="bundle.js" async defer></script>
 </html>

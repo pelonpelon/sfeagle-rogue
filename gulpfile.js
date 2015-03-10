@@ -130,34 +130,6 @@ gulp.task('assets', function() {
     }));
 });
 
-// Index file
-// gulp.task('index', function() {
-  // src.index = VERSION_DIR + '/pages/index.html';
-  // return gulp.src(src.index)
-    // .pipe($.changed(DEST))
-    // .pipe(gulp.dest(DEST))
-    // .pipe($.size({
-      // title: 'index'
-    // }));
-// });
-
-// jade files // don't process _partials.jade that haven't changed
-// gulp.task('jade', function() {
-  // src.index = 'src/pages/**/*.jade';
-  // return gulp.src(src.index)
-    // .pipe($.changed(DEST, {extension: '.html'}))
-    // .pipe($.if(global.isWatching, $.cached('jade')))
-    // .pipe($.jadeInheritance({basedir: 'src'}))
-    // .pipe($.filter(function(file) {
-      // return !/\/_/.test(file.path) || !/^_/.test(file.relative);
-    // }))
-    // .pipe($.jade())
-    // .pipe(gulp.dest(DEST))
-    // .pipe($.size({
-      // title: 'index'
-    // }));
-// });
-
 // Images
 gulp.task('images', function() {
   src.images = 'src/images/**';
@@ -176,12 +148,12 @@ gulp.task('images', function() {
 // HTML pages
     // .pipe($.changed(DEST))
 gulp.task('pages', ['jade'], function() {
-  // src.pages = ['src/pages/**/*.js', 'src/pages/index.html', 'src/pages/404.html'];
   src.pages = ['src/pages/index.html', 'src/pages/404.html'];
   return gulp.src(src.pages)
     .pipe($.replace('bundle.js', VERSION + '/bundle.js'))
     .pipe($.replace('myapp', VERSION))
-    .pipe($.replace('myGoogleAnalyticsId', myconfig.myGoogleAnalyticsId))
+    .pipe($.replace('appRootUrl', myconfig.appRootUrl))
+    .pipe($.replace('myGoogleAnalyticsId', myconfig.myGoogleApiKey))
     .pipe($.replace('myGoogleListedName', myconfig.myGoogleListedName))
     .pipe($.replace('myStreetAddress', myconfig.myStreetAddress))
     .pipe($.replace('myCity', myconfig.myCity))
@@ -285,22 +257,29 @@ gulp.task('serve', function(cb) {
     gulp.watch(src.assets, ['assets']);
     gulp.watch(src.images, ['images']);
     gulp.watch('./src/pages/jade/**/*.jade', ['jade']);
-    gulp.watch(src.pages, ['pages']);
-    gulp.watch(src.index, ['index']);
-    gulp.watch('./src/styles/**/*.styl', ['bundle']);
+    gulp.watch('./src/pages/**/*.html', ['pages']);
+    gulp.watch('./src/styles/**/*.*', ['bundle']);
     gulp.watch('./src/**/*.coffee', ['bundle']);
+
     gulp.watch(DEST + '/**/*.*', function(file) {
       browserSync.reload(path.relative(__dirname, file.path));
     });
     gulp.watch('gulpfile.js', ['build'], function(file) {
       browserSync.reload(path.relative(__dirname, file.path));
     });
+    gulp.watch('gulp-config.js', ['build'], function(file) {
+      browserSync.reload(path.relative(__dirname, file.path));
+    });
+    gulp.watch('myprivateconfig.js', ['build'], function(file) {
+      browserSync.reload(path.relative(__dirname, file.path));
+    });
     gulp.watch('gulp/**/*.*', ['build'], function(file) {
       browserSync.reload(path.relative(__dirname, file.path));
     });
-    gulp.watch('./mithril_palantir.js', function(file) {
+    gulp.watch('./mithril-palantir.js', function(file) {
       browserSync.reload(path.relative(__dirname, file.path));
     });
+
     cb();
   });
 });
@@ -390,7 +369,15 @@ gulp.task('pagespeed', pagespeed.bind(null, {
   // By default, we use the PageSpeed Insights
   // free (no API key) tier. You can use a Google
   // Developer API key if you have one. See
-  // http://goo.gl/RkN0vE for info key: 'YOUR_API_KEY'
-  url: 'https://example.com',
+  // http://goo.gl/RkN0vE for info
+  key:myconfig.myGoogleApiKey,
+  url: myconfig.appRootUrl + '/index.html',
   strategy: 'mobile'
 }));
+var WebPageTest = require('webpagetest');
+gulp.task('webpagetest', function() {
+  var wpt = new WebPageTest('www.webpagetest.org', myconfig.myWebPageTestApiKey);
+  wpt.runTest(myconfig.appRootUrl + '/index.html', function(err, data) {
+    $.util.log($.util.colors.yellow('WebPageTest Results: '), err || data.data.userUrl);
+  });
+});

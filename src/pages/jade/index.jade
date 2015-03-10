@@ -20,5 +20,52 @@ html(lang='en')
     #header
     #myapp
     #footer
+    script
+      :coffeescript
+        if localStorage.getItem('events')
+          console.log('yes localStorage')
+          events = JSON.parse localStorage.getItem('events')
+
+          # //- this mess id to work out DST
+          Date::stdTimezoneOffset = ->
+            jan = new Date(@getFullYear(), 0, 1)
+            jul = new Date(@getFullYear(), 6, 1)
+            Math.max jan.getTimezoneOffset(), jul.getTimezoneOffset()
+
+          Date::dst = ->
+            @getTimezoneOffset() < @stdTimezoneOffset()
+
+          today = new Date()
+          anHour = 60*60*1000
+
+          # //- this mess is so I can work from a different timezone
+          localOffsetHours = today.getTimezoneOffset()/60
+          SanFranciscoOffsetHours = if today.dst() then 7 else 8
+          offsetHours = SanFranciscoOffsetHours - localOffsetHours
+
+          now = today.getTime()
+          if today.setHours(offsetHours,0,0,0) < now < today.setHours(2+offsetHours,0,0,0)
+            closingTime = today.getTime(today.setHours(2+offsetHours,0,0,0))
+          else
+            closingTime = today.getTime(today.setHours(2+offsetHours,0,0,0))+24*anHour
+
+          #//- console.log 'offsetHours: ', offsetHours
+          #//- console.log 'now: ', now
+          #//- console.log 'closingTime: ', closingTime
+          todaysEvents = events.filter (event)->
+            #//- console.log 'event: ', event.title, ' @ ', parseInt(event.date_num)*1000
+            return parseInt(event.date_num)*1000 < closingTime+24*anHour
+          for event in todaysEvents
+            div = document.createElement('div')
+            div.style.color= 'red'
+            div.innerHTML = event.time + '-' + event.endtime + ' ' + (event.title).replace(/<br\ ?\/?>/g, ' ')
+            div.innerHTML = div.textContent
+            footer = document.getElementById('footer')
+            footerParent = footer.parentNode
+            footerParent.insertBefore(div, footer)
+        else
+          console.log('no localStorage')
+          console.log(localStorage.getItem('events'))
+
 
   script(src='bundle.js' async defer)
