@@ -5,54 +5,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SF-Eagle (rogue)</title>
     <!-- Google only recognizes 'visible' microdata. This is a work-a-round.-->
-    <style type="text/css">body > div:first-of-type { width: 1px; height: 1px; overflow: hidden;}</style>
+    <style type="text/css">
+      body > div:first-of-type { width: 1px; height: 1px; overflow: hidden;}
+      body {color: aliceblue}
+      #container { height: 100vh}
+      #header { height: 10%;}
+      #header h1 { margin: 0;}
+      #header p { margin: 0;}
+      .page-title {}
+      .dayLabel {font-size: xx-large; font-variant: small-caps; font-family: "Impact", "Futura-CondensedExtraBold", sans-serif; color: aliceblue;}
+      .events-today { max-width: 400px;}
+      .event-time { display: inline-block; width: 20%; margin-bottom: 10px; color: #999; font-size: smaller; vertical-align: top; }
+      .event-title { display: inline-block; width: 75%; margin-bottom: 10px; color: #c00; font-family: sans-serif; font-variant: small-caps;}
+    </style>
   </head>
   <body>
     <div itemscope itemtype="http://schema.org/Organization"><span itemprop="name">myGoogleListedName</span>
       <div itemprop="address" itemscope itemtype="http://schema.org/PostalAddress"><span itemprop="streetAddress">myStreetAddress</span><span itemprop="addressLocality">myCity</span><span itemprop="addressRegion">myState</span></div><img itemprop="logo" src="myLogoUrl"><a href="myBusinessUrl" itemprop="url">myBusinessUrl</a>
     </div>
-    <div id="header"></div>
-    <div id="myapp"></div>
-    <div id="footer"></div>
+    <div id="container">
+      <div id="header"></div>
+      <div id="main"></div>
+      <div id="footer"></div>
+    </div>
     <script>(function() {
-  var SanFranciscoOffsetHours, anHour, closingTime, div, event, events, footer, footerParent, i, len, localOffsetHours, now, offsetHours, today, todaysEvents;
+  var anHour, closingAdjustment, closingTime, closingTimeYesterday, div, divToday, end, event, events, footer, footerParent, i, len, now, today, todaysEvents, weekdays;
 
   if (localStorage.getItem('events')) {
     console.log('yes localStorage');
     events = JSON.parse(localStorage.getItem('events'));
-    Date.prototype.stdTimezoneOffset = function() {
-      var jan, jul;
-      jan = new Date(this.getFullYear(), 0, 1);
-      jul = new Date(this.getFullYear(), 6, 1);
-      return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
-    };
-    Date.prototype.dst = function() {
-      return this.getTimezoneOffset() < this.stdTimezoneOffset();
-    };
     today = new Date();
-    anHour = 60 * 60 * 1000;
-    localOffsetHours = today.getTimezoneOffset() / 60;
-    SanFranciscoOffsetHours = today.dst() ? 7 : 8;
-    offsetHours = SanFranciscoOffsetHours - localOffsetHours;
     now = today.getTime();
-    if ((today.setHours(offsetHours, 0, 0, 0) < now && now < today.setHours(2 + offsetHours, 0, 0, 0))) {
-      closingTime = today.getTime(today.setHours(2 + offsetHours, 0, 0, 0));
-    } else {
-      closingTime = today.getTime(today.setHours(2 + offsetHours, 0, 0, 0)) + 24 * anHour;
-    }
+    anHour = 60 * 60 * 1000;
+    weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    closingAdjustment = today.getHours() < 2 ? 0 : 24;
+    closingTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 2 + closingAdjustment);
+    closingTimeYesterday = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1, 2 + closingAdjustment);
+    console.log('closingAdjustment: ', closingAdjustment);
+    console.log('closingTime: ', closingTime);
+    console.log('closingTimeYesterday: ', closingTimeYesterday);
     todaysEvents = events.filter(function(event) {
-      return parseInt(event.date_num) * 1000 < closingTime + 24 * anHour;
+      var ref;
+      return (closingTimeYesterday.getTime() / 1000 < (ref = parseInt(event.date_num)) && ref < closingTime.getTime() / 1000);
     });
+    divToday = document.createElement('div');
+    divToday.classList.add('todays-events');
+    divToday.innerHTML = '<div class="dayLabel">' + weekdays[closingTime.getDay() - 1] + '</div><hr>';
     for (i = 0, len = todaysEvents.length; i < len; i++) {
       event = todaysEvents[i];
+      end = event.endtime === '2:00am' ? '' : '-' + event.endtime;
       div = document.createElement('div');
-      div.style.color = 'red';
-      div.innerHTML = event.time + '-' + event.endtime + ' ' + event.title.replace(/<br\ ?\/?>/g, ' ');
-      div.innerHTML = div.textContent;
-      footer = document.getElementById('footer');
-      footerParent = footer.parentNode;
-      footerParent.insertBefore(div, footer);
+      div.classList.add('events-today');
+      div.innerHTML = event.title.replace(/<br\ ?\/?>/g, ' ').toLowerCase();
+      div.innerHTML = '<div class="event-time">' + event.time + end + '</div>' + ' <div class="event-title">' + div.textContent + '</div>';
+      divToday.innerHTML += div.innerHTML;
     }
+    footer = document.getElementById('footer');
+    footerParent = footer.parentNode;
+    footerParent.insertBefore(divToday, footer);
   } else {
     console.log('no localStorage');
     console.log(localStorage.getItem('events'));

@@ -25,7 +25,7 @@ m.module document.getElementById("header"), header
 # footer = require("./components/footer/footer.controller")
 # m.module document.getElementById("footer"), footer
 
-m.route document.getElementById("rogue"), "/",
+m.route document.getElementById("main"), "/",
   "/": myapp()
 
 css = ".logo { margin: 10% auto; text-align: center; } .logo img { margin: auto; }"
