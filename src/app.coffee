@@ -1,12 +1,17 @@
 # app.js
 "use strict"
-insert = require("insert-css")
 config = require("../gulp-config.js")
 require "./styles/app.styl"
 window.m = require("mithril")
 
+req = (args)->
+  m.request(args)
+
+logoUrl =  config.version + '/assets/logo-trans-black-240.png'
+eventsUrl = config.version + '/assets/events.json'
+
 getEvents = ->
-  m.request({method: 'GET', url: config.version + '/assets/events.json'}).then (events)->
+  req({method: 'GET', url: eventsUrl }).then (events)->
     localStorage.setItem('events', JSON.stringify(events))
 
 getEvents()
@@ -15,9 +20,9 @@ myapp = ->
   controller: ->
 
   view: (ctrl) ->
-    m ".logo",
-      m "a[href=\"http://sf-eagle.com\"]", title: "SF-Eagle.com",
-        m "img", src: "http://sf-eagle.com/storm/images/logo-trans-black-240.png"
+    m "a[href=\"http://sf-eagle.com\"]", title: "SF-Eagle.com",
+      m ".logo"
+        # m "img", src: logoUrl, width: '240', height: '240'
 
 header = require("./components/header/header.controller")
 m.module document.getElementById("header"), header
@@ -27,8 +32,4 @@ m.module document.getElementById("header"), header
 
 m.route document.getElementById("main"), "/",
   "/": myapp()
-
-css = ".logo { margin: 10% auto; text-align: center; } .logo img { margin: auto; }"
-insert css,
-  prepend: true
 
