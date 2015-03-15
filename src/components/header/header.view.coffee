@@ -1,8 +1,11 @@
-"use strict"
+'use strict'
+# header.view.coffee
+
 header = require("./header.model")
 header.view = (ctrl) ->
-  m ".page-title",
+  m 'div',
     [
-      m("h1", header.vm.title)
-      m("p", header.vm.subtitle)
+      m 'button.menu-button#open-button'
+      m 'h1.page-title', header.vm.title
+      m '.logo'
     ]

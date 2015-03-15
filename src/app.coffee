@@ -7,7 +7,7 @@ window.m = require("mithril")
 req = (args)->
   m.request(args)
 
-logoUrl =  config.version + '/assets/logo-trans-black-240.png'
+logoUrl =  config.version + '/assets/logo-trans-black-200.png'
 eventsUrl = config.version + '/assets/events.json'
 
 getEvents = ->
@@ -22,7 +22,7 @@ myapp = ->
   view: (ctrl) ->
     m "a[href=\"http://sf-eagle.com\"]", title: "SF-Eagle.com",
       m ".logo"
-        # m "img", src: logoUrl, width: '240', height: '240'
+        # m "img", src: logoUrl, width: '200', height: '200'
 
 header = require("./components/header/header.controller")
 m.module document.getElementById("header"), header

@@ -84,7 +84,7 @@ module.exports = function(release, watch) {
         },
         {
           test: /\.styl/,
-          loader: 'style!css!stylus'
+          loader: 'style!css?sourceMap!stylus?sourcemap=true&resolve-url=true'
         },
         {
           test: /\.less$/,
