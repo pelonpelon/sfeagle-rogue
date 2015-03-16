@@ -1,9 +1,11 @@
 'use strict'
 # Menu.controller.coffee
 
-Menu = require './Menu.model.coffee'
+Menu = require './Menu.model'
+require './Menu.view'
 
 Menu.controller = ->
-  @menuItems = Menu.items
+  Menu.vm.init()
+  return
 
 module.exports = Menu

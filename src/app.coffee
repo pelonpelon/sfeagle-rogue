@@ -16,20 +16,27 @@ getEvents = ->
 
 getEvents()
 
-myapp = ->
-  controller: ->
+Menu = require './components/Menu/Menu.controller'
+header = require "./components/header/header.controller"
 
-  view: (ctrl) ->
-    m "a[href=\"http://sf-eagle.com\"]", title: "SF-Eagle.com",
-      m ".logo"
-        # m "img", src: logoUrl, width: '200', height: '200'
+Page = (module) ->
+  return {
+    controller: ->
+      window.document.body.classList.remove('show-menu')
+      new module.controller
+    view: (ctrl) ->
+      [
+        m '.menu-wrap', Menu.view(new Menu.controller)
+        m 'button.menu-button#open-button', onclick: Menu.vm.toggleMenu
+        m '.content-wrap',
+          [
+            m '.header', header.view(new header.controller)
+            m '.content', module.view(ctrl)
+          ]
+      ]
+  }
 
-header = require("./components/header/header.controller")
-m.module document.getElementById("header"), header
-
-# footer = require("./components/footer/footer.controller")
-# m.module document.getElementById("footer"), footer
-
-m.route document.getElementById("main"), "/",
-  "/": myapp()
+m.route document.getElementById("container"), "/",
+  "/": new Page(require('./components/Logo/Logo.controller'))
+  "/storm": new Page(require('./components/Storm/Storm.controller'))
 

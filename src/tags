@@ -5,13 +5,23 @@
 !_TAG_PROGRAM_URL	https://github.com/lukaszkorecki/CoffeeTags	/GitHub repository/
 !_TAG_PROGRAM_VERSION	0.2.1	//
 Event	components/Events/Events.model.coffee	/^Event = (data)->$/;"	f	lineno:6	object:window	type:function
-controller	app.coffee	/^  controller: ->$/;"	f	lineno:20	object:myapp	type:function
-controller	components/Menu/Menu.controller.coffee	/^Menu.controller = ->$/;"	f	lineno:6	object:window	type:function
+Page	app.coffee	/^Page = (module) ->$/;"	f	lineno:22	object:window	type:function
+controller	app.coffee	/^    controller: ->$/;"	f	lineno:24	object:Page	type:function
+controller	components/Menu/Menu.controller.coffee	/^Menu.controller = ->$/;"	f	lineno:7	object:window	type:function
+controller	components/Storm/Storm.controller.coffee	/^Storm.controller = ->$/;"	f	lineno:6	object:window	type:function
+controller	components/header/header.controller.coffee	/^header.controller = ->$/;"	f	lineno:6	object:window	type:function
 getEvents	app.coffee	/^getEvents = ->$/;"	f	lineno:13	object:window	type:function
-init	components/header/header.model.coffee	/^  vm.init = ->$/;"	f	lineno:5	object:vm	type:function
+init	components/Menu/Menu.model.coffee	/^  vm.init = ->$/;"	f	lineno:11	object:vm	type:function
+init	components/Menu/main.coffee	/^  init = ->$/;"	f	lineno:2	object:window	type:function
+init	components/header/header.model.coffee	/^  vm.init = ->$/;"	f	lineno:6	object:vm	type:function
+initEvents	components/Menu/main.coffee	/^  initEvents = ->$/;"	f	lineno:6	object:window	type:function
 method	app.coffee	/^  req({method: 'GET', url: eventsUrl }).then (events)->$/;"	f	lineno:14	object:getEvents	type:function
-myapp	app.coffee	/^myapp = ->$/;"	f	lineno:19	object:window	type:function
 req	app.coffee	/^req = (args)->$/;"	f	lineno:7	object:window	type:function
-view	app.coffee	/^  view: (ctrl) ->$/;"	f	lineno:22	object:myapp	type:function
-view	components/header/header.view.coffee	/^header.view = (ctrl) ->$/;"	f	lineno:5	object:window	type:function
-vm	components/header/header.model.coffee	/^header.vm = (->$/;"	f	lineno:3	object:window	type:function
+toggleMenu	components/Menu/Menu.model.coffee	/^    vm.toggleMenu = (ev) ->$/;"	f	lineno:28	object:vm.init	type:function
+view	app.coffee	/^    view: (ctrl) ->$/;"	f	lineno:27	object:Page	type:function
+view	components/Menu/Menu.view.coffee	/^Menu.view = (ctrl) ->$/;"	f	lineno:6	object:window	type:function
+view	components/Storm/Storm.controller.coffee	/^Storm.view = (ctrl) ->$/;"	f	lineno:9	object:window	type:function
+view	components/header/header.view.coffee	/^header.view = (ctrl) ->$/;"	f	lineno:6	object:window	type:function
+vm	components/Menu/Menu.model.coffee	/^Menu.vm = (->$/;"	f	lineno:8	object:window	type:function
+vm	components/header/header.model.coffee	/^header.vm = (->$/;"	f	lineno:4	object:window	type:function
+wrap	components/Menu/main.coffee	/^  togglemenu-wrap = ->$/;"	f	lineno:18	object:window	type:function
