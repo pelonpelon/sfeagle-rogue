@@ -4,8 +4,9 @@
 Storm = {}
 
 Storm.controller = ->
-  window.document.location.href = 'http://sf-eagle.com/storm/index.php'
-
+  setTimeout(->
+    window.document.location.href = 'http://sf-eagle.com/storm/index.php'
+  1000)
 Storm.view = (ctrl) ->
   return m '.logo', style: {backgroundColor: 'black'},
     [

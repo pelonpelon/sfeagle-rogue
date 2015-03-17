@@ -1,20 +1,42 @@
+'use strict'
 # app.js
-"use strict"
-config = require("../gulp-config.js")
-require "./styles/app.styl"
-window.m = require("mithril")
+
+config = require('../gulp-config.js')
+require './styles/app.styl'
+fastclick = require('fastclick')
+fastclick.attach(document.body)
+window.m = require('mithril')
 
 req = (args)->
   m.request(args)
 
+if window.document.location.host == 'sf-eagle.com'
+  console.log 'grabbing events from sf-eagle DB'
+  eventsUrl = 'http://sf-eagle.com/cgi-bin/events.cgi'
+else
+  console.log 'not on sf-eagle.com :: events from localStorage'
+  eventsUrl = config.version + '/assets/events.json'
 logoUrl =  config.version + '/assets/logo-trans-black-200.png'
-eventsUrl = config.version + '/assets/events.json'
 
 getEvents = ->
-  req({method: 'GET', url: eventsUrl }).then (events)->
-    localStorage.setItem('events', JSON.stringify(events))
+  console.log 'removing events from localStorage'
+  localStorage.removeItem('events')
+  req({method: 'GET', url: eventsUrl })
+    .then (events)->
+      localStorage.setItem('events', JSON.stringify(events))
+    .then ()->
+      console.log 'added events to localStorage' if localStorage.hasOwnProperty('events')
+      require './common/events_sql.coffee'
 
 getEvents()
+
+importFontsAwesome = ->
+  fa = window.document.createElement 'link'
+  fa.rel= "stylesheet"
+  fa.href= "//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"
+  document.head.appendChild fa
+
+importFontsAwesome()
 
 Menu = require './components/Menu/Menu.controller'
 header = require "./components/header/header.controller"

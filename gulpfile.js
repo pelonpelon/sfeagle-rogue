@@ -270,13 +270,16 @@ gulp.task('serve', function(cb) {
     gulp.watch('gulp-config.js', ['build'], function(file) {
       browserSync.reload(path.relative(__dirname, file.path));
     });
+    gulp.watch('./config/webpack.js', ['build'], function(file) {
+      browserSync.reload(path.relative(__dirname, file.path));
+    });
     gulp.watch('myprivateconfig.js', ['build'], function(file) {
       browserSync.reload(path.relative(__dirname, file.path));
     });
     gulp.watch('gulp/**/*.*', ['build'], function(file) {
       browserSync.reload(path.relative(__dirname, file.path));
     });
-    gulp.watch('./mithril-palantir.js', function(file) {
+    gulp.watch('./mithril-palantir.js', ['build'], function(file) {
       browserSync.reload(path.relative(__dirname, file.path));
     });
 

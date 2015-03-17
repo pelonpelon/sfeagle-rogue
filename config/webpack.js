@@ -6,6 +6,7 @@
 'use strict';
 
 var webpack = require('webpack');
+var config = require('../myprivateconfig.js');
 
 /**
  * Get configuration for Webpack
@@ -25,7 +26,8 @@ module.exports = function(release, watch) {
     watch: watch,
 
     output: {
-      filename: 'bundle.js'
+      filename: 'bundle.js',
+      path: __dirname + '/' + config.version
     },
 
     stats: {
@@ -41,6 +43,7 @@ module.exports = function(release, watch) {
       new webpack.optimize.UglifyJsPlugin(),
       new webpack.optimize.OccurenceOrderPlugin(),
       new webpack.optimize.AggressiveMergingPlugin()
+      // new ExtractTextPlugin('styles.css')
     ] : [],
 
     resolve: {
@@ -65,6 +68,21 @@ module.exports = function(release, watch) {
       ],
 
       loaders: [
+
+        // {
+          // test: /\.(otf|eot|png|svg|ttf|woff|woff2)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+          // loader: 'file-loader'
+        // },
+        // {
+          // test: /\.svg$/,
+          // test: /\.(svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+          // loader: 'url-loader?limit=10000&minetype=application/font-woff'
+          // loader: 'file-loader'
+        // },
+        // {test: /\.woff($|\?)/, loader: 'url-loader?limit=10000&minetype=application/font-woff' },
+        // { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url-loader?limit=10000&minetype=application/font-woff' },
+        // { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'file-loader' },
+
         // loading every .js file ca be slow. Use this per file instead: import Animal from "babel!./Animal.js";
         {
           test: /\.js$/, exclude: /node_modules/,
