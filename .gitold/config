@@ -1,0 +1,31 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+	ignorecase = true
+	precomposeunicode = true
+[remote "origin"]
+	url = https://github.com/pelonpelon/dev-setup
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "master"]
+	remote = origin
+	merge = refs/heads/master
+[remote "rogue"]
+	url = https://github.com/pelonpelon/sfeagle-rogue
+	fetch = +refs/heads/*:refs/remotes/rogue/*
+[gitflow "branch"]
+	master = release
+	develop = next
+[gitflow "prefix"]
+	feature = feature/
+	release = release/
+	hotfix = hotfix/
+	support = support/
+	versiontag = rogue
+[branch "feature/menu"]
+	remote = rogue
+	merge = refs/heads/feature/menu
+[branch "next"]
+	remote = origin
+	merge = refs/heads/next
